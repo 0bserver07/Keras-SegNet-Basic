@@ -3,29 +3,20 @@ from __future__ import print_function
 import os
 
 
-import pylab as pl
-import matplotlib.cm as cm
-import itertools
-import numpy as np
-import theano.tensor as T
-np.random.seed(07) # 0bserver07 for reproducibility
-
-from keras.datasets import mnist
-from keras.layers.noise import GaussianNoise
 import keras.models as models
 from keras.layers.core import Layer, Dense, Dropout, Activation, Flatten, Reshape, Merge, Permute
 from keras.layers.convolutional import Convolution2D, MaxPooling2D, UpSampling2D, ZeroPadding2D
 from keras.layers.normalization import BatchNormalization
-from keras.utils import np_utils
-from keras.regularizers import ActivityRegularizer
-from keras.utils.visualize_util import plot
+
 
 from keras import backend as K
 
 import cv2
 import numpy as np
+import json
+np.random.seed(07) # 0bserver07 for reproducibility
 
-
+data_shape = 360*480
 
 
 
@@ -114,3 +105,6 @@ segnet_basic.add(Activation('softmax'))
 
 
 # Save model to JSON
+
+with open('segNet_basic_model.json', 'w') as outfile:
+    outfile.write(json.dumps(json.loads(segnet_basic.to_json()), indent=2))

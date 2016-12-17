@@ -1,5 +1,12 @@
+from __future__ import absolute_import
+from __future__ import print_function
+
 import cv2
 import numpy as np
+import itertools
+
+from helper import *
+import os
 
 def normalized(rgb):
     #return rgb/255.0
@@ -15,7 +22,7 @@ def normalized(rgb):
 
     return norm
 
-def binarylab(labels):
+def one_hot_it(labels):
     x = np.zeros([360,480,12])
     for i in range(360):
         for j in range(480):

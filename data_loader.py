@@ -1,11 +1,17 @@
+from __future__ import absolute_import
+from __future__ import print_function
+
+import cv2
+import numpy as np
+import itertools
+
 from helper import *
 import os
 
-
-
-# Change this to where the Data from this project CamVid is:
+# Copy the data to this dir here in the SegNet project /CamVid from here:
 # https://github.com/alexgkendall/SegNet-Tutorial
-path = '../SegNet-Tutorial/CamVid/'
+path = './CamVid/'
+data_shape = 360*480
 
 
 def load_data(mode):
@@ -16,18 +22,18 @@ def load_data(mode):
         txt = [line.split(' ') for line in txt]
     for i in range(len(txt)):
         train_data.append(np.rollaxis(normalized(cv2.imread(os.getcwd() + txt[i][0][7:])),2))
-        train_label.append(binarylab(cv2.imread(os.getcwd() + txt[i][1][7:][:-1])[:,:,0]))
+        train_label.append(one_hot_it(cv2.imread(os.getcwd() + txt[i][1][7:][:-1])[:,:,0]))
         print('.',end='')
     return np.array(train_data), np.array(train_label)
 
 
-train_data, train_label = prep_data()
+train_data, train_label = load_data("train")
 
 train_label = np.reshape(train_label,(367,data_shape,12))
 
-np.save("train_data", x)
+np.save("data/train_data", train_data)
 
-np.save("train_label", x)
+np.save("data/train_label", train_label)
 
 # FYI they are:
 # Sky = [128,128,128]

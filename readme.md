@@ -19,11 +19,21 @@ Basically it's a mini-segnet to experiment / test the architecure with convnets,
 
  -----
 
+### Steps To Run The Model:
+---
+
+1. Run `python model-basic.py` to create `segNet_basic_model` for keras to use.
+	
+	* `model-basic.py` contains the architecure.
+
+2. 
+
+
 
 ### Dataset:
 ---
 
-1. The data required to run the Road Scene Segmentation can be found here in the project as a stored numpy Array. 
+1. The data required to run the Road Scene Segmentation can be found here in the project as a stored numpy Array `/data/train_data.npz/` and `/data/train_label.npz`.
 
 2. In case you need the original set, refer to:
 
@@ -42,6 +52,7 @@ Basically it's a mini-segnet to experiment / test the architecure with convnets,
 	[ ] SegNet-Basic
 	[ ] SegNet
 	[ ] Test Accuracy
+	[ ] Requirements
 
 
 
