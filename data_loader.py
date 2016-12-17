@@ -10,7 +10,7 @@ import os
 
 # Copy the data to this dir here in the SegNet project /CamVid from here:
 # https://github.com/alexgkendall/SegNet-Tutorial
-path = './CamVid/'
+DataPath = './CamVid/'
 data_shape = 360*480
 
 

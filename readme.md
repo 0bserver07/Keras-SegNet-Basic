@@ -33,13 +33,13 @@ Basically it's a mini-segnet to experiment / test the architecure with convnets,
 ### Dataset:
 ---
 
-1. The data required to run the Road Scene Segmentation can be found here in the project as a stored numpy Array `/data/train_data.npz/` and `/data/train_label.npz`.
-
-2. In case you need the original set, refer to:
-
-	* In a different directory run this to download the [dataset from original Implementation](https://github.com/alexgkendall/SegNet-Tutorial).
+1. In a different directory run this to download the [dataset from original Implementation](https://github.com/alexgkendall/SegNet-Tutorial).
 	* `git clone git@github.com:alexgkendall/SegNet-Tutorial.git`
-	* change `DataPath` to the above directory
+	* copy the `/CamVid` to here, or change the `DataPath` in `data_loader.py` to the above directory
+2. The run `python data_loader.py` to generate these two files:
+	
+	* `/data/train_data.npz/` and `/data/train_label.npz`
+	* This will make it easy to process the model over and over, rather than waiting the data to be loaded into memory.
 
 
 
