@@ -13,7 +13,7 @@ import keras.models as models
 from keras.layers.core import Layer, Dense, Dropout, Activation, Flatten, Reshape, Merge, Permute
 from keras.layers.convolutional import Convolution2D, MaxPooling2D, UpSampling2D, ZeroPadding2D
 from keras.layers.normalization import BatchNormalization
-
+from keras.callbacks import ModelCheckpoint
 
 from keras import backend as K
 
@@ -32,6 +32,8 @@ class_weighting= [0.2595, 0.1826, 4.5640, 0.1417, 0.5051, 0.3826, 9.6446, 1.8418
 train_data = np.load('./data/train_data.npy')
 train_label = np.load('./data/train_label.npy')
 
+test_data = np.load('./data/test_data.npy')
+test_label = np.load('./data/test_label.npy')
 
 # load the model:
 with open('segNet_basic_model.json') as model_file:
@@ -41,11 +43,17 @@ with open('segNet_basic_model.json') as model_file:
 
 segnet_basic.compile(loss="categorical_crossentropy", optimizer='adadelta', metrics=["accuracy"])
 
-nb_epoch = 1
-batch_size = 8
+# checkpoint
+filepath="weights.best.hdf5"
+checkpoint = ModelCheckpoint(filepath, monitor='val_acc', verbose=1, save_best_only=True, mode='max')
+callbacks_list = [checkpoint]
 
-history = segnet_basic.fit(train_data, train_label, batch_size=batch_size, nb_epoch=nb_epoch,
-                    verbose=1, class_weight=class_weighting )#, validation_data=(X_test, X_test))
+nb_epoch = 100
+batch_size = 6
+
+# Fit the model
+history = segnet_basic.fit(train_data, train_label, callbacks=callbacks_list, batch_size=batch_size, nb_epoch=nb_epoch,
+                    verbose=1, class_weight=class_weighting , validation_data=(test_data, test_label), shuffle=True) # validation_split=0.33
 
 # This save the trained model weights to this file with number of epochs
 segnet_basic.save_weights('model_weight_{}.hdf5'.format(nb_epoch))
