@@ -95,3 +95,5 @@ ENV/
 
 CamVid/
 data/
+
+*.hdf5
