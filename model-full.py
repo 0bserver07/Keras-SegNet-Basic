@@ -16,67 +16,115 @@ import numpy as np
 import json
 np.random.seed(07) # 0bserver07 for reproducibility
 
-data_shape = 360*480
 
+img_w = 480
+img_h = 360
+n_labels = 12
 
+kernel = 3
+pad = 1
+pool_size = 2
 
-def create_encoding_layers():
-    kernel = 3
-    filter_size = 64
-    pad = 1
-    pool_size = 2
-    return [
-        ZeroPadding2D(padding=(pad,pad)),
-        Convolution2D(filter_size, kernel, kernel, border_mode='valid'),
-        BatchNormalization(),
-        Activation('relu'),
-        MaxPooling2D(pool_size=(pool_size, pool_size)),
+encoding_layers = [
+    Convolution2D(64, kernel, kernel, border_mode='same'),
+    BatchNormalization(),
+    Activation('relu'),
+    Convolution2D(64, kernel, kernel, border_mode='same'),
+    BatchNormalization(),
+    Activation('relu'),
+    MaxPooling2D(pool_size=(pool_size, pool_size)),
 
-        ZeroPadding2D(padding=(pad,pad)),
-        Convolution2D(128, kernel, kernel, border_mode='valid'),
-        BatchNormalization(),
-        Activation('relu'),
-        MaxPooling2D(pool_size=(pool_size, pool_size)),
+    Convolution2D(128, kernel, kernel, border_mode='same'),
+    BatchNormalization(),
+    Activation('relu'),
+    Convolution2D(128, kernel, kernel, border_mode='same'),
+    BatchNormalization(),
+    Activation('relu'),
+    MaxPooling2D(pool_size=(pool_size, pool_size)),
 
-        ZeroPadding2D(padding=(pad,pad)),
-        Convolution2D(256, kernel, kernel, border_mode='valid'),
-        BatchNormalization(),
-        Activation('relu'),
-        MaxPooling2D(pool_size=(pool_size, pool_size)),
+    Convolution2D(256, kernel, kernel, border_mode='same'),
+    BatchNormalization(),
+    Activation('relu'),
+    Convolution2D(256, kernel, kernel, border_mode='same'),
+    BatchNormalization(),
+    Activation('relu'),
+    Convolution2D(256, kernel, kernel, border_mode='same'),
+    BatchNormalization(),
+    Activation('relu'),
+    MaxPooling2D(pool_size=(pool_size, pool_size)),
 
-        ZeroPadding2D(padding=(pad,pad)),
-        Convolution2D(512, kernel, kernel, border_mode='valid'),
-        BatchNormalization(),
-        Activation('relu'),
-    ]
+    Convolution2D(512, kernel, kernel, border_mode='same'),
+    BatchNormalization(),
+    Activation('relu'),
+    Convolution2D(512, kernel, kernel, border_mode='same'),
+    BatchNormalization(),
+    Activation('relu'),
+    Convolution2D(512, kernel, kernel, border_mode='same'),
+    BatchNormalization(),
+    Activation('relu'),
+    MaxPooling2D(pool_size=(pool_size, pool_size)),
 
-def create_decoding_layers():
-    kernel = 3
-    filter_size = 64
-    pad = 1
-    pool_size = 2
-    return[
-        ZeroPadding2D(padding=(pad,pad)),
-        Convolution2D(512, kernel, kernel, border_mode='valid'),
-        BatchNormalization(),
+    Convolution2D(512, kernel, kernel, border_mode='same'),
+    BatchNormalization(),
+    Activation('relu'),
+    Convolution2D(512, kernel, kernel, border_mode='same'),
+    BatchNormalization(),
+    Activation('relu'),
+    Convolution2D(512, kernel, kernel, border_mode='same'),
+    BatchNormalization(),
+    Activation('relu'),
+    MaxPooling2D(pool_size=(pool_size, pool_size)),
+]
 
-        UpSampling2D(size=(pool_size,pool_size)),
-        ZeroPadding2D(padding=(pad,pad)),
-        Convolution2D(256, kernel, kernel, border_mode='valid'),
-        BatchNormalization(),
+decoding_layers = [
+    UpSampling2D(size=(pool_size,pool_size)),
+    Convolution2D(512, kernel, kernel, border_mode='same'),
+    BatchNormalization(),
+    Activation('relu'),
+    Convolution2D(512, kernel, kernel, border_mode='same'),
+    BatchNormalization(),
+    Activation('relu'),
+    Convolution2D(512, kernel, kernel, border_mode='same'),
+    BatchNormalization(),
+    Activation('relu'),
 
-        UpSampling2D(size=(pool_size,pool_size)),
-        ZeroPadding2D(padding=(pad,pad)),
-        Convolution2D(128, kernel, kernel, border_mode='valid'),
-        BatchNormalization(),
+    UpSampling2D(size=(pool_size,pool_size)),
+    Convolution2D(512, kernel, kernel, border_mode='same'),
+    BatchNormalization(),
+    Activation('relu'),
+    Convolution2D(512, kernel, kernel, border_mode='same'),
+    BatchNormalization(),
+    Activation('relu'),
+    Convolution2D(256, kernel, kernel, border_mode='same'),
+    BatchNormalization(),
+    Activation('relu'),
 
-        UpSampling2D(size=(pool_size,pool_size)),
-        ZeroPadding2D(padding=(pad,pad)),
-        Convolution2D(filter_size, kernel, kernel, border_mode='valid'),
-        BatchNormalization(),
-    ]
+    UpSampling2D(size=(pool_size,pool_size)),
+    Convolution2D(256, kernel, kernel, border_mode='same'),
+    BatchNormalization(),
+    Activation('relu'),
+    Convolution2D(256, kernel, kernel, border_mode='same'),
+    BatchNormalization(),
+    Activation('relu'),
+    Convolution2D(128, kernel, kernel, border_mode='same'),
+    BatchNormalization(),
+    Activation('relu'),
 
+    UpSampling2D(size=(pool_size,pool_size)),
+    Convolution2D(128, kernel, kernel, border_mode='same'),
+    BatchNormalization(),
+    Activation('relu'),
+    Convolution2D(64, kernel, kernel, border_mode='same'),
+    BatchNormalization(),
+    Activation('relu'),
 
+    UpSampling2D(size=(pool_size,pool_size)),
+    Convolution2D(64, kernel, kernel, border_mode='same'),
+    BatchNormalization(),
+    Activation('relu'),
+    Convolution2D(n_labels, 1, 1, border_mode='valid'),
+    BatchNormalization(),
+]
 
 
 segnet_basic = models.Sequential()
@@ -84,27 +132,19 @@ segnet_basic = models.Sequential()
 segnet_basic.add(Layer(input_shape=(3, 360, 480)))
 
 
-
-segnet_basic.encoding_layers = create_encoding_layers()
+segnet_basic.encoding_layers = encoding_layers
 for l in segnet_basic.encoding_layers:
     segnet_basic.add(l)
 
-# Note: it this looks weird, that is because of adding Each Layer using that for loop
-# instead of re-writting mode.add(somelayer+params) everytime.
 
-segnet_basic.decoding_layers = create_decoding_layers()
+segnet_basic.decoding_layers = decoding_layers
 for l in segnet_basic.decoding_layers:
     segnet_basic.add(l)
 
-segnet_basic.add(Convolution2D(12, 1, 1, border_mode='valid',))
 
-segnet_basic.add(Reshape((12,data_shape), input_shape=(12,360,480)))
+segnet_basic.add(Reshape((n_labels, img_h * img_w), input_shape=(12,img_h, img_w)))
 segnet_basic.add(Permute((2, 1)))
 segnet_basic.add(Activation('softmax'))
-
-
-
-# Save model to JSON
 
 with open('segNet_full_model.json', 'w') as outfile:
     outfile.write(json.dumps(json.loads(segnet_basic.to_json()), indent=2))

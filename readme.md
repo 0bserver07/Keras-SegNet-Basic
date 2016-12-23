@@ -49,12 +49,39 @@ Basically it's a mini-segnet to experiment / test the architecure with convnets,
 ### To Do:
 ----
 
-	[ ] SegNet-Basic
+	[x] SegNet-Basic
 	[ ] SegNet
-	[ ] Test Accuracy
+	[x] Test Accuracy
 	[ ] Requirements
 
 
+### Segnet-Basic Road Scene Results:
+--------
+
+* Train / Test:
+
+```
+	Train on 367 samples, validate on 233 samples
+	Epoch 101/102
+	366/367 [============================>.] 
+	- ETA: 0s - loss: 0.3835 - acc: 0.8737Epoch 00000: val_acc improved from -inf to 0.76367, saving model to weights.best.hdf5
+	367/367 [==============================] 
+	- 231s - loss: 0.3832 - acc: 0.8738 - val_loss: 0.7655 - val_acc: 0.7637
+	Epoch 102/102
+	366/367 [============================>.] 
+	- ETA: 0s - loss: 0.3589 - acc: 0.8809Epoch 00001: val_acc did not improve
+	367/367 [==============================] 
+	- 231s - loss: 0.3586 - acc: 0.8810 - val_loss: 2.4447 - val_acc: 0.4478
+```
 
 
+* Evaluation:
 
+
+	`acc: 85.47%`
+
+
+    ![img1](./imgs_results/segmented_road_scene.png)
+
+
+	![img2](./imgs_results/real_road_scene.png)

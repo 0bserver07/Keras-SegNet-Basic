@@ -40,7 +40,6 @@ with open('segNet_basic_model.json') as model_file:
     segnet_basic = models.model_from_json(model_file.read())
 
 
-
 segnet_basic.compile(loss="categorical_crossentropy", optimizer='adadelta', metrics=["accuracy"])
 
 # checkpoint
@@ -56,5 +55,5 @@ history = segnet_basic.fit(train_data, train_label, callbacks=callbacks_list, ba
                     verbose=1, class_weight=class_weighting , validation_data=(test_data, test_label), shuffle=True) # validation_split=0.33
 
 # This save the trained model weights to this file with number of epochs
-segnet_basic.save_weights('model_weight_{}.hdf5'.format(nb_epoch))
+segnet_basic.save_weights('weights/model_weight_{}.hdf5'.format(nb_epoch))
 
